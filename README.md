@@ -131,3 +131,9 @@ but as a Project, it is clear this is a totally different type of Project,
 with different Goals,
 so how ever this works out,
 I hope this project does not die when I do.
+
+Please see the Wiki,
+then you will understand why I say it might be better to host this somewhere else,
+because I tend to have very long detailed instructions:
+https://github.com/Light-Wizzard/Calculator/wiki
+and some of them will change your life.
