@@ -123,8 +123,27 @@ var myBrowser = "";
 function getBrowser() {
     return myBrowser;
 }
-function setBrowser(browerName) {
-    myBrowser = browerName;
+function setBrowser(theBrowerName) {
+    myBrowser = theBrowerName;
+}
+/* ****************************************************************************
+ * SupportedBrowsers
+ * Most browswer Engines work like one of these,
+ * if you want to add a browser to this list,
+ * you must create a Logic Matrix for it,
+ * and edit every function to make sure it creates it correctly.
+ */
+var mySupportedBrowsers = ["chrome", "firefox", "opera", "safari", "ms"];
+function getSupportedBrowsers(theIndex) {
+    return mySupportedBrowsers[theIndex];
+}
+function setSupportedBrowsers(theBrowerName) {
+    if (mySupportedBrowsers.indexOf(theBrowerName) === -1) {
+        mySupportedBrowsers.push(theBrowerName);
+    }
+}
+function getSupportedBrowsersLength() {
+    return mySupportedDocTypes.length;
 }
 /* ****************************************************************************
  * DebugMessageType: 0=None, 1=Basic, 2=Detailed
