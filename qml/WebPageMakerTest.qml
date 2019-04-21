@@ -28,39 +28,63 @@ Page {
      * test
      */
     function test() {
+        // Create a local string to store the WebPageMaker data in
         let webPage = "";
+        // We will iterate thruogh the DocTypes so get its Length
         let docTypeLength = WebPageMaker.getSupportedDocTypesLength();
+        // We will iterate thruogh the Languages so get its Length
         let lanuagesLength = WebPageMaker.getSupportedLanguagesLength();
-        let lang = 0;
-        let i = 0;
+        // We will iterate thruogh the Browsers so get its Length
+        let browsersLength = WebPageMaker.getSupportedBrowsersLength();
+        // iterators
+        let langIndex = 0;
+        let docTypeIndex = 0;
+        let browserIndex = 0;
         console.debug("docTypeLength=" + docTypeLength)
         console.debug("lanuagesLength=" + lanuagesLength)
-        for (lang = 0; lang < lanuagesLength; lang++) {
-            console.debug("getSupportedLanguages(lang)=" + WebPageMaker.getSupportedLanguages(lang))
-            for (i = 0; i < docTypeLength; i++) {
-                // setLulu(true);
-                WebPageMaker.setLanguage(WebPageMaker.getSupportedLanguages(lang));
-                console.debug(WebPageMaker.getSupportedDocTypes(i));
-                WebPageMaker.setDocType(WebPageMaker.getSupportedDocTypes(i));
-                webPage = WebPageMaker.docType(WebPageMaker.getSupportedDocTypes(i));
-                webPage = webPage + "\n" + WebPageMaker.htmlStart();
-                webPage = webPage + "\n" + WebPageMaker.headStart("");
-                webPage = webPage + "\n" + WebPageMaker.meta("", "", "", "charset", "", "");
-                webPage = webPage + "\n" + WebPageMaker.meta("", "created", WebPageMaker.getTimeStamp(), "", "", "");
-
-                webPage = webPage + "\n" + WebPageMaker.headEnd();
-                webPage = webPage + "\n" + WebPageMaker.bodyStart("", "", "");
-                //Do something
-
-                webPage = webPage + "\n" + WebPageMaker.p("test", "testclass", "", "", "", "en", "", "Testing 123...");
-                webPage = webPage + "\n" + WebPageMaker.bodyEnd();
-                webPage = webPage + "\n" + WebPageMaker.htmlEnd();
-                // Write it to a file
-                if (! writeFile("Test/" + WebPageMaker.getLanguage() + "/test_" + WebPageMaker.getLanguage() + ".html", webPage)) {
-                    console.debug("Error writeFile: ")
-                }
-            }
-        }
+        for (langIndex = 0; langIndex < lanuagesLength; langIndex++) {
+            console.debug("getSupportedLanguages(langIndex)=" + WebPageMaker.getSupportedLanguages(langIndex))
+            for (docTypeIndex = 0; docTypeIndex < docTypeLength; docTypeIndex++) {
+                for (browserIndex = 0; browserIndex < browsersLength; browserIndex++) {
+                    // If you want to test Lulu
+                    // WebPageMaker.setLulu(true);
+                    // Set the Language
+                    WebPageMaker.setLanguage(WebPageMaker.getSupportedLanguages(langIndex));
+                    console.debug("getSupportedDocTypes(docTypeIndex)=" + WebPageMaker.getSupportedDocTypes(docTypeIndex));
+                    // Set the DocType
+                    WebPageMaker.setDocType(WebPageMaker.getSupportedDocTypes(docTypeIndex));
+                    // Set the Browser Type
+                    WebPageMaker.setBrowser(WebPageMaker.getSupportedBrowsers(browserIndex));
+                    // Create the DocType
+                    webPage = WebPageMaker.docType(WebPageMaker.getSupportedDocTypes(docTypeIndex));
+                    // Create the HTML tag
+                    webPage = webPage + "\n" + WebPageMaker.htmlStart();
+                    // Create the HEAD tag
+                    webPage = webPage + "\n" + WebPageMaker.headStart("");
+                    // Create the META tag for character set
+                    webPage = webPage + "\n" + WebPageMaker.meta("", "", "", "charset", "", "");
+                    // Create the META tag for  for date created
+                    webPage = webPage + "\n" + WebPageMaker.meta("", "created", WebPageMaker.getTimeStamp(), "", "", "");
+                    // End HEAD tag
+                    webPage = webPage + "\n" + WebPageMaker.headEnd();
+                    // Create BODY tag
+                    webPage = webPage + "\n" + WebPageMaker.bodyStart("", "", "");
+                    //Do something
+                    webPage = webPage + "\n" + WebPageMaker.p("test", "testclass", "", "", "", "en", "", "Testing 123...");
+                    // End BODY tag
+                    webPage = webPage + "\n" + WebPageMaker.bodyEnd();
+                    // End HTML tag
+                    webPage = webPage + "\n" + WebPageMaker.htmlEnd();
+                    // Write it to a file with a structure like below under LocalStorage:
+                    // Linux and MAC=~/.local/share/Calulator/Test
+                    // Windows=C:/Users/<USER>/AppData/Roaming/Calulator/Test
+                    // Test->DocType->Browser->Language/test.html
+                    if (! writeFile("Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/test.html", webPage)) {
+                        console.debug("Error writeFile: ")
+                    }
+                } // end for (browserIndex
+            } // end for (docTypeIndex
+        } // end for (langIndex
     } // end test
     /* ****************************************************************************
      * Did not work inside of JavaScript
