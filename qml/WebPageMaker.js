@@ -1,7 +1,7 @@
 /* ****************************************************************************
  * WebPageMaker.js
  * Written by Jeffrey Scott Flesher
- * Last Update: 20 April 2019
+ * Last Update: 21 April 2019
  * Version: 1.0
  *
  * import "WebPageMaker.js" 3.0 as WebPageMaker
@@ -132,8 +132,10 @@ function setBrowser(theBrowerName) {
  * if you want to add a browser to this list,
  * you must create a Logic Matrix for it,
  * and edit every function to make sure it creates it correctly.
+ * FIXME
+ * Added: android, ios
  */
-var mySupportedBrowsers = ["chrome", "firefox", "opera", "safari", "ms"];
+var mySupportedBrowsers = ["chrome", "firefox", "opera", "safari", "ms", "android", "ios"];
 function getSupportedBrowsers(theIndex) {
     return mySupportedBrowsers[theIndex];
 }
@@ -1086,6 +1088,25 @@ function setOverRideDocType(myOverRideDocType) {
      overRideDocType = myOverRideDocType;
 }
 /* ****************************************************************************
+ * prettyPrint
+ */
+var tabSpace = "    ";
+var doPrettyPrint = true;
+function getPrettyPrint() {
+    return doPrettyPrint;
+}
+function setPrettyPrint(myPrettyPrint) {
+     doPrettyPrint = myPrettyPrint;
+}
+function prettyPrint(myLevel) {
+    let i = 0;
+    let myTabs = "";
+    for (i = 1; i <= myLevel; i++) {
+        myTabs = myTabs + tabSpace;
+    }
+    return myTabs;
+}
+/* ****************************************************************************
  * Language
  * I include the complete set of codes for easy of access,
  * this App is designed to be Multilingual, so this is a big feature of it.
@@ -1652,16 +1673,21 @@ function abbr(myId, myClass, myStyle, myTitle, myContent) {
 }
 /* ****************************************************************************
  * acronym
+ * The <acronym> tag is not supported in HTML5. Use the <abbr> tag instead.
  * The <acronym> tag defines an acronym.
- * Not Supported in HTML5.
+ * An acronym must spell out another word. For example: NASA, ASAP, GUI.
+ * Marking up acronyms can give useful information to browsers, translation systems and search-engines.
  * <acronym title="as soon as possible">ASAP</acronym>
+ * Tip: The title attribute can be used to show the full version of the acronym when you mouse over it.
+ * The <acronym> tag is not supported in HTML5.
+ * title
  */
-function acronym(myId, myClass, myStyle, myContent) {
+function acronym(myId, myClass, myStyle, myTitle, myContent) {
     if (getDebugMessageType() === 1) {
         console.debug("acronym(" + myId + "," + myClass + "," + myStyle + "," + myContent + ")");
     }
     if (getDocType() === "HTML5") {
-        return abbr(myId, myClass, myStyle, myContent);
+        return abbr(myId, myClass, myStyle, myTitle, myContent);
     }
     let theId = "";
     if (myId !== "") {
@@ -1675,7 +1701,11 @@ function acronym(myId, myClass, myStyle, myContent) {
     if (myStyle !== "") {
         theStyle = ' style="' + myStyle + '"';
     }
-    return '<acronym' + theId + theClassName + theStyle + '>' + myContent + '</acronym>';
+    let theTitle = "";
+    if (myTitle !== "") {
+        theTitle = ' title="' + myTitle + '"';
+    }
+    return '<acronym' + theId + theClassName + theStyle + theTitle + '>' + myContent + '</acronym>';
 }
 /* ****************************************************************************
  * address
@@ -1707,22 +1737,46 @@ function address(myId, myClass, myStyle, myContent) {
  * Not Supported in HTML5: Use <embed> or <object> instead.
  * The <applet> tag defines an embedded applet.
  * firefox and safri only
+ * Note: There is still some support for the <applet> tag in some browsers, but it requires additional plug-ins/installations to work.
+ * Note: The <applet> tag is supported in Internet Explorer 11 and earlier versions, using a plug-in.
+ * The <applet> tag is not supported in HTML5.
+ * Attribute	Value       Description
+ * code         URL         Specifies the file name of a Java applet
+ * object       name        Specifies a reference to a serialized representation of an applet
+ * Attribute	Value       Description
+ * align        left
+ *              right
+ *              top
+ *              bottom
+ *              middle
+ *              baseline	Specifies the alignment of an applet according to surrounding elements
+ * alt          text        Specifies an alternate text for an applet
+ * archive      URL         Specifies the location of an archive file
+ * codebase     URL         Specifies a relative base URL for applets specified in the code attribute
+ * height       pixels      Specifies the height of an applet
+ * hspace       pixels      Defines the horizontal spacing around an applet
+ * name         name        Defines the name for an applet (to use in scripts)
+ * vspace       pixels      Defines the vertical spacing around an applet
+ * width        pixels      Specifies the width of an applet
  */
-function applet(myId, myClass, myStyle, myCode, myWidth, myHeight, myContent) {
+function applet(myName, myClass, myStyle, myAlign, myAlt, myCode, myCodeBase, myArchive, myObject, myHspace, myVspace, myWidth, myHeight, myContent) {
     if (getDebugMessageType() === 1) {
-        console.debug("applet(" + myId + "," + myClass + "," + myStyle + "," + myCode + "," + myWidth + "," + myHeight + "," + myContent + ")");
+        console.debug("applet(" + myName + "," + myClass + "," + myStyle + "," + myCode + "," + myWidth + "," + myHeight + "," + myContent + ")");
     }
-    if (getDocType() !== "HTML5") {
-        return object(myId, myClass, myStyle, myCode, myWidth, myHeight, myContent);
+    var myParam = param(myName + "_parm", myClass, "code", "", myCode, "");
+    let theContent = "";
+    if (myContent !== "") {
+        theContent = myContent + myParam;
+    } else {
+        theContent = myParam;
     }
-    if (getBrowser() === "chrome" || getBrowser() === "ms" || getBrowser() === "opera") {
-        // chrome firefox safari ms opera
-        return object(myId, myClass, myStyle, myCode, myWidth, myHeight, myContent);
+    // chrome firefox safari ms opera
+    if (getDocType() === "HTML5" || getBrowser() === "chrome" || getBrowser() === "opera" || getBrowser() === "ms" || getBrowser() === "android"  || getBrowser() === "ios") {
+        return object(myName, myClass, myStyle, "", "", "", "", myArchive, myAlign, "", "", "", "", "", myHspace, myVspace, myWidth, myHeight, "", theContent)
     }
-
     let theId = "";
-    if (myId !== "") {
-        theId = ' id="' + myId + '"';
+    if (myName !== "") {
+        theId = ' id="' + myName + '" name="' + myName + '"';
     }
     let theClassName = "";
     if (myClass !== "") {
@@ -1732,9 +1786,25 @@ function applet(myId, myClass, myStyle, myCode, myWidth, myHeight, myContent) {
     if (myStyle !== "") {
         theStyle = ' style="' + myStyle + '"';
     }
+    let theAlign = "";
+    if (myAlign !== "") {
+        theAlign = ' align="' + myAlign + '"';
+    }
     let theCode = "";
     if (myCode !== "") {
         theCode = ' code="' + myCode + '"';
+    }
+    let theArchive = "";
+    if (myArchive !== "") {
+        theArchive = ' archive="' + myArchive + '"';
+    }
+    let theVspace = "";
+    if (myVspace !== "") {
+        theVspace = ' vspace="' + myVspace + '"';
+    }
+    let theHspace = "";
+    if (myHspace !== "") {
+        theHspace = ' hspace="' + myHspace + '"';
     }
     let theWidth = "";
     if (myWidth !== "") {
@@ -1744,7 +1814,7 @@ function applet(myId, myClass, myStyle, myCode, myWidth, myHeight, myContent) {
     if (myHeight !== "") {
         theHeight = ' height="' + myHeight + '"';
     }
-    return '<applet' + theId + theClassName + theStyle + theCode + myWidth + myHeight + '></applet>';
+    return '<applet' + theId + theClassName + theStyle + theAlign + theArchive + theCode + theVspace + theHspace + theWidth + theHeight + '></applet>';
 }
 /* ****************************************************************************
  * area
@@ -1752,52 +1822,79 @@ function applet(myId, myClass, myStyle, myCode, myWidth, myHeight, myContent) {
  * (an image-map is an image with clickable areas).
  * The <area> element is always nested inside a <map> tag.
  * <area shape="rect" coords="0,0,66,166" alt="Sun" href="sun.html">
- * Attribute	Value	  Description
- * alt          text      Specifies an alternate text for the area. Required if the href attribute is present
- * coords	coordinates	  Specifies the coordinates of the area
- * download	filename	  Specifies that the target will be downloaded when a user clicks on the hyperlink
- * href	URL	Specifies the hyperlink target for the area
- * hreflang	language_code Specifies the language of the target URL
- * media	media query	  Specifies what media/device the target URL is optimized for
- * nohref	value         Not supported in HTML5.
-                          Specifies that an area has no associated link
- * rel	alternate, author, bookmark, help, license, next, nofollow, noreferrer, prefetch, prev, search, tag
- *                        Specifies the relationship between the current document and the target URL
- * shape	default, rect, circle,poly
-                          Specifies the shape of the area
- * target	_blank, _parent, _self, _top, framename
-                          Specifies where to open the target URL
- * type     media_type	  Specifies the media type of the target URL
+ * Attribute	Value         Description
+ * alt          text          Specifies an alternate text for the area. Required if the href attribute is present
+ * coords       coordinates	  Specifies the coordinates of the area
+ * download     filename	  Specifies that the target will be downloaded when a user clicks on the hyperlink
+ * href         URL	Specifies the hyperlink target for the area
+ * hreflang     language_code Specifies the language of the target URL
+ * media        media query	  Specifies what media/device the target URL is optimized for
+ * nohref       value         Not supported in HTML5.
+                              Specifies that an area has no associated link
+ * rel: alternate, author, bookmark, help, license, next, nofollow, noreferrer, prefetch, prev, search, tag
+ *                            Specifies the relationship between the current document and the target URL
+ * shape        default, rect, circle,poly
+                              Specifies the shape of the area
+ * target       _blank, _parent, _self, _top, framename
+                              Specifies where to open the target URL
+ * type         media_type	  Specifies the media type of the target URL
  */
-function area(myId, myShape, myCoords, myAlt, myHref, myTarget) {
+function area(myId, myAlt, myCoords, myDownload, myHref, myHreflang, myMedia, myNohref, myRel, myShape, myTarget, myType) {
     if (getDebugMessageType() === 1) {
-        console.debug("area(" + myId + "," + myShape + "," + myCoords + "," + myAlt + "," + myHref + "," + myTarget + ")");
+        console.debug("area(" + myId + "," + myAlt + "," + myCoords + "," + myShape + "," + myHref + "," + myTarget + ")");
     }
     let theId = "";
     if (myId !== "") {
         theId = ' id="' + myId + '"';
     }
-    let theShape = "";
-    if (myShape !== "") {
-        theShape = ' shape="' + myShape + '"';
+    let theAlt = "";
+    if (myAlt !== "") {
+        theAlt = ' alt="' + myAlt + '"';
     }
     let theCoords = "";
     if (myCoords !== "") {
         theCoords = ' coords="' + myCoords + '"';
     }
-    let theAlt = "";
-    if (myAlt !== "") {
-        theAlt = ' alt="' + myAlt + '"';
-    }
     let theHref = "";
     if (myHref !== "") {
         theHref = ' href="' + myHref + '"';
+    }
+    let theRel = "";
+    if (myRel !== "") {
+        theRel = ' rel="' + myRel + '"';
+    }
+    let theShape = "";
+    if (myShape !== "") {
+        theShape = ' shape="' + myShape + '"';
     }
     let theTarget= "";
     if (myTarget !== "") {
         theTarget = ' target="' + myTarget + '"';
     }
-    return '<area' + theId + theShape + theCoords + theAlt + theHref + theTarget + elEnd();
+    let theDownload= "";
+    let theHreflang= "";
+    let theMedia= "";
+    let theNohref= "";
+    let theType= "";
+    if (getDocType() === "HTML5") {
+        if (myDownload !== "") {
+            theDownload = ' download="' + myDownload + '"';
+        }
+        if (myHreflang !== "") {
+            theHreflang = ' hreflang="' + myHreflang + '"';
+        }
+        if (myMedia !== "") {
+            theMedia = ' media="' + myMedia + '"';
+        }
+        if (myType !== "") {
+            theType = ' type="' + myType + '"';
+        }
+    } else {
+        if (myNohref !== "") {
+            theNohref = ' nohref="' + myNohref + '"';
+        }
+    }
+    return '<area' + theId + theAlt + theCoords + theDownload + theHref + theHreflang + theMedia + theNohref + theRel + theShape + theTarget + elEnd();
 }
 /* ****************************************************************************
  * article
@@ -2255,7 +2352,7 @@ function canvas(myId, myClass, myStyle, myWidth, myHeight, myContent) {
     }
     if (getDocType() !== "HTML5") {
         // FIXME: can this be done with an object and JavaScript?
-        return object(myId, myClass, myStyle, "", myWidth, myHeight, myContent);
+        return  object(myId, myClass, myStyle, "", "", "", "", "", "", "", "", "", "", "", "", "", myWidth, myHeight, "", myContent)
     }
     let theId = "";
     if (myId !== "") {
@@ -2918,7 +3015,7 @@ function embed(myId, myClass, myStyle, myType, mySrc, myWidth, myHeight) {
     }
     if (getDocType() !== "HTML5" && ! getOverRideDocType()) {
         // this needs an override
-        return object(myId, myClass, myStyle, mySrc, myWidth, myHeight, "");
+        return object(myId, myClass, myStyle, "", "", myType, "", mySrc, "", "", "", "", "", "", "", "", myWidth, myHeight, "", "")
     }
     let theId = "";
     if (myId !== "") {
@@ -3987,19 +4084,19 @@ function img(myId, myClass, myStyle, mySrc, mySrcSet, myAlign, myAlt, myBorder, 
     }
     let theCrossorigin = "";
     if (myCrossOrigin !== "") {
-        theCrossorigin = ' crossorigin="' + myCrossOrigin + '";';
+        theCrossorigin = ' crossorigin="' + myCrossOrigin + '"';
     }
     let theUsemap = "";
     if (myUseMap !== "") {
-        theUsemap = ' usemap="' + myUseMap + '";';
+        theUsemap = ' usemap="' + myUseMap + '"';
     }
     let theIsmap = "";
     if (myIsMap !== "") {
-        theIsmap = ' ismap="' + myIsMap + '";';
+        theIsmap = ' ismap="' + myIsMap + '"';
     }
     let theLongdesc = "";
     if (myLongDesc !== "") {
-        theLongdesc = ' longdesc="' + myLongDesc + '";';
+        theLongdesc = ' longdesc="' + myLongDesc + '"';
     }
     let theAlign = "";
     let theExtraStyles = "";
@@ -4024,13 +4121,13 @@ function img(myId, myClass, myStyle, mySrc, mySrcSet, myAlign, myAlt, myBorder, 
             theAlign = ' align="' + myAlign + '"';
         }
         if (myBorder !== "") {
-            theBorder = ' border="' + myBorder + '";';
+            theBorder = ' border="' + myBorder + '"';
         }
         if (myHspace !== "") {
-            theHspace = ' hspace="' + myHspace + '";';
+            theHspace = ' hspace="' + myHspace + '"';
         }
         if (myVspace !== "") {
-            theVspace = ' vspace="' + myVspace + '";';
+            theVspace = ' vspace="' + myVspace + '"';
         }
     }
     let theStyle = "";
@@ -4045,7 +4142,7 @@ function img(myId, myClass, myStyle, mySrc, mySrcSet, myAlign, myAlt, myBorder, 
             theStyle = ' style="' + theExtraStyles + '"';
         }
     }
-    return '<img' + theId + theClassName + theStyle + theSrc + theSrcset + myWidth + myHeight + theUsemap + theIsmap + theLongdesc + theCrossorigin + theAlt + theAlign + theBorder + theHspace + theVspace + elEnd();
+    return '<img' + theId + theClassName + theStyle + theSrc + theSrcset + theWidth + theHeight + theUsemap + theIsmap + theLongdesc + theCrossorigin + theAlt + theAlign + theBorder + theHspace + theVspace + elEnd();
 }
 /* ****************************************************************************
  * input
@@ -5088,7 +5185,7 @@ function object(myId, myClass, myStyle, myClassid, myFormId, myType, myUseMap, m
             theFormId = ' form="' + myFormId + '"';
         }
     }
-    return '<object' + theId + theClassName + theStyle + theFormId + theType + theUseMap + theAlign + theArchive + theBorder + theClassid + theCodebase + theCodetype + theDeclare + theVspace + theHspace + theStandby + myData + myWidth + myHeight + '>' + myContent + '</object>';
+    return '<object' + theId + theClassName + theStyle + theFormId + theType + theUseMap + theAlign + theArchive + theBorder + theClassid + theCodebase + theCodetype + theDeclare + theVspace + theHspace + theStandby + theData + theWidth + theHeight + '>' + myContent + '</object>';
 }
 /* ****************************************************************************
  * ol
@@ -5380,19 +5477,19 @@ function param(myId, myClass, myName, myType, myValue, myValueType) {
     }
     let theId = "";
     if (myId !== "") {
-        theId = ' id="' + myId + '"' + ' name="' + myId + '"';
+        theId = ' id="' + myId + '"';
     }
     let theClassName = "";
     if (myClass !== "") {
         theClassName = ' class="' + myClass + '"';
     }
-    let theValue = "";
-    if (myValue !== "") {
-        theValue = ' value="' + myValue + '"';
-    }
     let theName = "";
     if (myName !== "") {
         theName = ' name="' + myName + '"';
+    }
+    let theValue = "";
+    if (myValue !== "") {
+        theValue = ' value="' + myValue + '"';
     }
     let theType = "";
     let theValueType = "";
