@@ -11,6 +11,7 @@ Page {
         id: column
         spacing: 4
         anchors.fill: parent
+
     }
 
     AppButton {
@@ -70,7 +71,77 @@ Page {
                     // Create BODY tag
                     webPage = webPage + "\n" + WebPageMaker.bodyStart("", "", "");
                     //Do something
-                    webPage = webPage + "\n" + WebPageMaker.p("test", "testclass", "", "", "", "en", "", "Testing 123...");
+                    // webPage = webPage + "\n" + WebPageMaker;
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.a("test_a", "testclass", "", "#test_video", "", "Test link Video");
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.br();
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.abbr("test_abbr", "testclass", "", "Element", "Element is an HTML tag wiht no ending.");
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.br();
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.acronym("test_acronum", "testclass", "", "Tag", "Tag is an HTML Element with an ending.");
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.br();
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.address("test_address", "testclass", "", "123 Anywhere way, Somewhere, 123456");
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.br();
+                    // We must create a Java App and copy it
+                    //                                      applet( myId,          myClass, myStyle, myAlign, myAlt, myCode, myCodeBase, myArchive, myObject, myHspace, myVspace, myWidth, myHeight, myContent)
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.applet("test_applet", "testclass", "", "center", "", "HelloWorld.class", "", "", "", "", "", "150", "25", "");
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.br();
+                    var javaApp = 'import java.applet.Applet;\nimport java.awt.Graphics;\npublic class HelloWorld extends Applet {\n    public void paint(Graphics g) {\n        g.drawString("Hello world!", 50, 25);\n    }\n}';
+                    if (! writeFile("Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/HelloWorld.java", javaApp)) {
+                        console.debug("Error writeFile: ")
+                    }
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.p("test_p", "testclass", "", "", "", "en", "", "Click on the sun or on one of the planets to watch it closer:");
+                    // FIXME copyFile does not work, on hold till I fix this, seems to be text only, ticket in
+                    if (! copyFile("../assets/planets.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/planets.gif")) {
+                        console.debug("Error writeFile: ")
+                    }
+                    if (! copyFile("../assets/sun.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/sun.gif")) {
+                        console.debug("Error writeFile: ")
+                    }
+                    if (! copyFile("../assets/merglobe.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/merglobe.gif")) {
+                        console.debug("Error writeFile: ")
+                    }
+                    if (! copyFile("../assets/venglobe.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/venglobe.gif")) {
+                        console.debug("Error writeFile: ")
+                    }
+                    // img(myId, myClass, myStyle, mySrc, mySrcSet, myAlign, myAlt, myBorder, myCrossOrigin, myUseMap, myIsMap, myLongDesc, mySizes, myHspace, myVspace, myWidth, myHeight, myContent)
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.img("test_img", "testclass", "", "planets.gif", "", "", "Planets", "", "", "#planetmap", "", "", "", "", "", "145", "126", "");
+                    // Sun
+                    // area(myId, myAlt, myCoords, myDownload, myHref, myHreflang, myMedia, myNohref, myRel, myShape, myTarget, myType)
+                    let theAreaSun =  WebPageMaker.prettyPrint(2) + WebPageMaker.area("test_area_sun", "Sun", "0,0,82,126", "", "sun.html", "", "", "", "", "rect", "", "");
+                    let sunApp = '<html><head></head><body><img src="sun.gif" style=""width: 100px; height: 100px;"></body></html>';
+                    if (! writeFile("Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/sun.html", sunApp)) {
+                        console.debug("Error writeFile: ")
+                    }
+                    // Mercury
+                    let theAreaMercury =  WebPageMaker.prettyPrint(2) + WebPageMaker.area("test_area_mercury", "Mercury", "90,58,3", "", "mercury.html", "", "", "", "", "circle", "", "");
+                    let mercuryApp = '<html><head></head><body><img src="merglobe.gif" style=""width: 100px; height: 100px;"></body></html>';
+                    if (! writeFile("Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/mercury.html", mercuryApp)) {
+                        console.debug("Error writeFile: ")
+                    }
+                    // Venus
+                    let theAreaVenus =  WebPageMaker.prettyPrint(2) + WebPageMaker.area("test_area_venus", "Venus", "124,58,8", "", "venus.html", "", "", "", "", "circle", "", "");
+                    let venusApp = '<html><head></head><body><img src="venglobe.gif" style=""width: 100px; height: 100px;"></body></html>';
+                    if (! writeFile("Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/venus.html", venusApp)) {
+                        console.debug("Error writeFile: ")
+                    }
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.map("planetmap", "testclass", "", "\n" + theAreaSun + "\n" + theAreaMercury + "\n" + theAreaVenus + "\n" + WebPageMaker.prettyPrint(1));
+                    //
+                    let theArticle = "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.h1("test_h1", "testclass", "", "", "WebPageMaker News") + "\n" + WebPageMaker.prettyPrint(2) + WebPageMaker.p("test_article_p", "testclass", "", "", "", "", "", "WebPageMaker is an (X)HTML file maker.") + "\n" + WebPageMaker.prettyPrint(1);
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.article("test_article", "testclass", "", theArticle);
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.p("test_aside_p", "testclass", "", "", "", "", "", "WebPageMaker can be used in a CMS");
+                    let theAside = "\n" + WebPageMaker.prettyPrint(2) + WebPageMaker.h2("test_aside_h2", "testclass", "", "", "CMS") + "\n" + WebPageMaker.prettyPrint(2) + WebPageMaker.p("test_article_p", "testclass", "", "", "", "", "", "A CMS is a Content Managament System") + "\n" + WebPageMaker.prettyPrint(1);
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.aside("test_aside", "testclass", "", theAside);
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.audio("test_audio", "audio.oga", "audio.mp3", "controls", "", "", "", myLable);
+                    if (! copyFile("../assets/audio.oga","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/audio.oga")) {
+                        console.debug("Error writeFile: ")
+                    }
+                    if (! copyFile("../assets/audio.mp3","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/audio.mp3")) {
+                        console.debug("Error writeFile: ")
+                    }
+                    //webPage = webPage + "\n" + WebPageMaker;
+                    //webPage = webPage + "\n" + WebPageMaker;
+                    //webPage = webPage + "\n" + WebPageMaker;
+                    //webPage = webPage + "\n" + WebPageMaker;
+                    //webPage = webPage + "\n" + WebPageMaker;
                     // End BODY tag
                     webPage = webPage + "\n" + WebPageMaker.bodyEnd();
                     // End HTML tag
@@ -164,7 +235,7 @@ Page {
         if (WebPageMaker.getDebugMessageType() === 1) {
             console.debug("writeFile(" + myFileName + "," + fileContentAsString + ")");
         }
-        let fileName = fileUtils.storageLocation(FileUtils.AppLocalDataLocation, myFileName)
+        let fileName = fileUtils.storageLocation(FileUtils.AppLocalDataLocation, myFileName);
         return fileUtils.writeFile(fileName, fileContentAsString);
     }
     /* ****************************************************************************
@@ -174,8 +245,19 @@ Page {
         if (WebPageMaker.getDebugMessageType() === 1) {
             console.debug("readFile(" + myFileName + ")");
         }
-        let fileName = fileUtils.storageLocation(FileUtils.AppLocalDataLocation, myFileName)
+        let fileName = fileUtils.storageLocation(FileUtils.AppLocalDataLocation, myFileName);
         return fileUtils.readFile(fileName);
+    }
+    /* ****************************************************************************
+     * https://felgo.com/doc/felgo-fileutils/
+     */
+    function copyFile(mySource, myDestination) {
+        if (WebPageMaker.getDebugMessageType() === 1) {
+            console.debug("copyFile(" + mySource + ", " + myDestination + ")");
+        }
+        let sourceFileName = fileUtils.storageLocation(Qt.resolvedUrl("."), mySource);
+        let destinationFileName = fileUtils.storageLocation(FileUtils.AppLocalDataLocation, myDestination);
+        return fileUtils.copyFile(sourceFileName, destinationFileName);
     }
 } // end Page
 
