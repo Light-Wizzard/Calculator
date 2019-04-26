@@ -1,7 +1,7 @@
 /* ****************************************************************************
  * WebPageMaker.js
  * Written by Jeffrey Scott Flesher
- * Last Update: 21 April 2019
+ * Last Update: 25 April 2019
  * Version: 1.0
  *
  * import "WebPageMaker.js" 3.0 as WebPageMaker
