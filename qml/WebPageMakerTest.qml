@@ -1,6 +1,11 @@
+/* ****************************************************************************
+ * Written by Jeffrey Scott Flesher
+ * Last Update: 25 April 2019
+ */
 import Felgo 3.0
 import QtQuick 2.0
 import "WebPageMaker.js" 3.0 as WebPageMaker
+import myGlobal 1.0
 
 Page {
     id: page
@@ -32,11 +37,11 @@ Page {
         // Create a local string to store the WebPageMaker data in
         let webPage = "";
         // We will iterate thruogh the DocTypes so get its Length
-        let docTypeLength = WebPageMaker.getSupportedDocTypesLength();
+        let docTypeLength = WebPageMaker.getSupportedDocTypesLength() - 1;
         // We will iterate thruogh the Languages so get its Length
-        let lanuagesLength = WebPageMaker.getSupportedLanguagesLength();
+        let lanuagesLength = WebPageMaker.getSupportedLanguagesLength() - 1;
         // We will iterate thruogh the Browsers so get its Length
-        let browsersLength = WebPageMaker.getSupportedBrowsersLength();
+        let browsersLength = WebPageMaker.getSupportedBrowsersLength() - 1;
         // iterators
         let langIndex = 0;
         let docTypeIndex = 0;
@@ -90,16 +95,16 @@ Page {
                     }
                     webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.p("test_p", "testclass", "", "", "", "en", "", "Click on the sun or on one of the planets to watch it closer:");
                     // FIXME copyFile does not work, on hold till I fix this, seems to be text only, ticket in
-                    if (! copyFile("../assets/planets.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/planets.gif")) {
+                    if (! copyFile("assets/planets.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/planets.gif")) {
                         console.debug("Error writeFile: ")
                     }
-                    if (! copyFile("../assets/sun.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/sun.gif")) {
+                    if (! copyFile("assets/sun.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/sun.gif")) {
                         console.debug("Error writeFile: ")
                     }
-                    if (! copyFile("../assets/merglobe.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/merglobe.gif")) {
+                    if (! copyFile("assets/merglobe.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/merglobe.gif")) {
                         console.debug("Error writeFile: ")
                     }
-                    if (! copyFile("../assets/venglobe.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/venglobe.gif")) {
+                    if (! copyFile("assets/venglobe.gif","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/venglobe.gif")) {
                         console.debug("Error writeFile: ")
                     }
                     // img(myId, myClass, myStyle, mySrc, mySrcSet, myAlign, myAlt, myBorder, myCrossOrigin, myUseMap, myIsMap, myLongDesc, mySizes, myHspace, myVspace, myWidth, myHeight, myContent)
@@ -130,11 +135,12 @@ Page {
                     webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.p("test_aside_p", "testclass", "", "", "", "", "", "WebPageMaker can be used in a CMS");
                     let theAside = "\n" + WebPageMaker.prettyPrint(2) + WebPageMaker.h2("test_aside_h2", "testclass", "", "", "CMS") + "\n" + WebPageMaker.prettyPrint(2) + WebPageMaker.p("test_article_p", "testclass", "", "", "", "", "", "A CMS is a Content Managament System") + "\n" + WebPageMaker.prettyPrint(1);
                     webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.aside("test_aside", "testclass", "", theAside);
-                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.audio("test_audio", "audio.oga", "audio.mp3", "controls", "", "", "", myLable);
-                    if (! copyFile("../assets/audio.oga","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/audio.oga")) {
+                    webPage = webPage + "\n" + WebPageMaker.prettyPrint(1) + WebPageMaker.audio("test_audio", "audio.oga", "audio.mp3", "controls", "", "", "", "myLable");
+                    console.debug("*********** WebPageMaker.getSupportedBrowsers(" + browserIndex + ")=" + WebPageMaker.getSupportedBrowsers(browserIndex));
+                    if (! copyFile("assets/audio.oga","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/audio.oga")) {
                         console.debug("Error writeFile: ")
                     }
-                    if (! copyFile("../assets/audio.mp3","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/audio.mp3")) {
+                    if (! copyFile("assets/audio.mp3","Test/" + WebPageMaker.getSupportedDocTypes(docTypeIndex) + "/" + WebPageMaker.getSupportedBrowsers(browserIndex) + "/" + WebPageMaker.getLanguage() + "/audio.mp3")) {
                         console.debug("Error writeFile: ")
                     }
                     //webPage = webPage + "\n" + WebPageMaker;
@@ -255,9 +261,14 @@ Page {
         if (WebPageMaker.getDebugMessageType() === 1) {
             console.debug("copyFile(" + mySource + ", " + myDestination + ")");
         }
-        let sourceFileName = fileUtils.storageLocation(Qt.resolvedUrl("."), mySource);
-        let destinationFileName = fileUtils.storageLocation(FileUtils.AppLocalDataLocation, myDestination);
-        return fileUtils.copyFile(sourceFileName, destinationFileName);
+        //let sourceFileName = fileUtils.storageLocation(Qt.resolvedUrl("."), mySource);
+        //let destinationFileName = fileUtils.storageLocation(FileUtils.AppLocalDataLocation, myDestination);
+        //return fileUtils.copyFile(sourceFileName, destinationFileName);
+        myGlobalObject.debugMessageLevel = 3;
+        myGlobalObject.overwrite = true;
+        myGlobalObject.localStoragePath = myGlobalObject.appDataLocation();
+        // myGlobalObject.localStoragePath = myGlobalObject.documentsLocation();
+        return myGlobalObject.copyFile(mySource, myDestination);
     }
 } // end Page
 
