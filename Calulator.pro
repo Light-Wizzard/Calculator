@@ -4,6 +4,9 @@ CONFIG += felgo
 # uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 # for the remaining steps to build a custom Live Code Reload app see here: https://felgo.com/custom-code-reload-app/
 #CONFIG += felgo-live
+#DEFINES += FELGO_LIVE
+#DEFINES += FELGO_DEPLOY
+DEFINES += FELGO_CPP
 
 # configure the identifier and version information
 PRODUCT_IDENTIFIER = com.yourcompany.wizardApp.Calulator
@@ -31,7 +34,13 @@ RESOURCES += #    resources.qrc # uncomment for publishing
 
 
 # The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    cpp/myGlobalObject.cpp \
+    cpp/myQmlType.cpp
+
+HEADERS += \
+    cpp/myGlobalObject.hpp \
+    cpp/myQmlType.hpp
 
 android {
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
@@ -59,4 +68,5 @@ DISTFILES += \
     qml/Webook.qml \
     qml/CustomComboBox.qml \
     qml/Webook.js \
-    qml/WebPageMakerTest.qml
+    qml/WebPageMakerTest.qml \
+    qml/HelloWorld.java
